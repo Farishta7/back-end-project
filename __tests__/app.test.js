@@ -16,14 +16,16 @@ describe('app', () => {
             return request(app) // Arrange
             .get("/api/topics") // Act
             .expect(200) // Supertest assertion
-            .then((result) => {
-                expect(result.body.topics).toBeInstanceOf(Array); // this checks that we are receiving back an array as a key
+            .then(({body}) => {
+                expect(body.topics).toBeInstanceOf(Array); // this checks that we are receiving back an array as a key
                 // The test below checks that we'll get an array back with THE CORRECT objects as specified:
-                result.body.topics.forEach(topic => {
-                   expect(topic).objectContaining({
+                body.topics.forEach((topic) => {
+                   expect(topic).toEqual(
+                    expect.objectContaining({
                     slug: expect.any(String),
                     description: expect.any(String),
                    })
+                   )
                 });
             })
         });
