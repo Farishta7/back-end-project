@@ -11,7 +11,7 @@ afterAll(() => {
 })
 
 describe('app', () => {
-    describe('/api/topics', () => {
+    describe.only('/api/topics', () => {
         test('GET request. 200 status code. Responds with an array of topic objects, with properties of "slug" and "description"', () => {
             return request(app) // Arrange
             .get("/api/topics") // Act
