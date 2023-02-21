@@ -11,7 +11,7 @@ afterAll(() => {
 })
 
 describe('app', () => {
-    describe.only('/api/topics', () => {
+    describe('/api/topics', () => {
         test('GET request. 200 status code. Responds with an array of topic objects, with properties of "slug" and "description"', () => {
             return request(app) // Arrange
             .get("/api/topics") // Act
@@ -30,6 +30,40 @@ describe('app', () => {
                    })
                    )
                 });
+            })
+        });
+    });
+
+    describe('/api/articles', () => {
+        test('GET request. 200 status code. Responds with an array of article objects with 8 keys in descending order.', () => {
+            return request(app) // Arrange
+            .get("/api/articles")
+            .expect(200)
+            .then(({body}) => {
+                expect(body.articles).toBeInstanceOf(Array);
+                expect(body.articles.length).toBeGreaterThan(0);
+
+                body.articles.forEach((article) => {
+                    expect(article).toEqual(
+                     expect.objectContaining({
+                     author: expect.any(String),
+                     title: expect.any(String),
+                     article_id: expect.any(Number),
+                     topic: expect.any(String),
+                     created_at: expect.any(String),
+                     votes: expect.any(Number),
+                     article_img_url: expect.any(String),
+                     comment_count: expect.any(Number),
+                    })
+                    )
+                 });
+
+                 const articlesCopy = [...body.articles];
+                 const sortedArticles = articlesCopy.sort((articleA, articleB) => {
+                    return articleB.date - articleA.date;
+                 })
+
+                 expect(sortedArticles).toEqual(body.articles);
             })
         });
     });
