@@ -1,12 +1,15 @@
 const express = require("express");
 const app = express();
 const { getTopics } = require("./controllers/topics-controller");
-//const {statusError500} = require("./controller/errorhandlingcontroller");
+const {getArticles} = require("./controllers/articles-controller");
+const {statusError500} = require("./controllers/error-handling-controller")
 
 app.use(express.json());
 
 app.get("/api/topics", getTopics);
 
-//app.use(statusError500);
+app.get("/api/articles", getArticles);
+
+app.use(statusError500);
 
 module.exports = app;
