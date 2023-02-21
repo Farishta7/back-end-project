@@ -17,7 +17,10 @@ describe('app', () => {
             .get("/api/topics") // Act
             .expect(200) // Supertest assertion
             .then(({body}) => {
-                expect(body.topics).toBeInstanceOf(Array); // this checks that we are receiving back an array as a key
+                // this checks that we are receiving back an array as a key
+                expect(body.topics).toBeInstanceOf(Array);
+                // the following tests that the incoming key of an array definitely has something in it:
+                expect(body.topics.length).toBeGreaterThan(0); 
                 // The test below checks that we'll get an array back with THE CORRECT objects as specified:
                 body.topics.forEach((topic) => {
                    expect(topic).toEqual(
