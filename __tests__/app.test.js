@@ -105,6 +105,39 @@ describe('app', () => {
                 expect(body.message).toBe("Bad request made.")
             })
         });
+    });
 
+    describe('/api/articles/:article_id/comments', () => {
+        test('GET request. 200 status code. Should respond with an array of comments for the given article_id of which each comment should have the correct properties. Comments should also be served with the most recent comments first', () => {
+            return request(app)
+            .get("/api/articles/1/comments")
+            .expect(200)
+            .then(({body}) => {
+                body.articleComments.forEach((comment) => {
+                    expect(comment).toEqual(
+                     expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        votes: expect.any(Number),
+                        created_at: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        article_id: expect.any(Number)
+                    })
+                    )
+                 });
+
+                expect(body.articleComments).toBeInstanceOf(Array);
+                expect(body.articleComments.length).toBeGreaterThan(0); 
+
+                const commentsCopy = [...body.articleComments];
+                 const sortedComments = commentsCopy.sort((articleA, articleB) => {
+                    return articleA.date - articleB.date;
+                 })
+
+                 expect(sortedComments).toEqual(body.articleComments);
+            })
+
+            
+        });
     });
 });
