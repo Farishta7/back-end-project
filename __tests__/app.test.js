@@ -107,7 +107,7 @@ describe('app', () => {
         });
     });
 
-    describe.only('/api/articles/:article_id/comments', () => {
+    describe('/api/articles/:article_id/comments', () => {
         test('GET request. 200 status code. Should respond with an array of comments for the given article_id of which each comment should have the correct properties. Comments should also be served with the most recent comments first', () => {
             return request(app)
             .get("/api/articles/1/comments")
