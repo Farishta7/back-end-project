@@ -66,5 +66,45 @@ describe('app', () => {
                  expect(sortedArticles).toEqual(body.articles);
             })
         });
+
+    });
+
+    describe('/api/articles/:article_id', () => {
+        test('GET request. 200 status code. responds with a single article object.', () => {
+            return request(app)
+            .get("/api/articles/1")
+            .expect(200)
+            .then(({body}) => {
+                expect(body.article).toEqual({
+                    author: 'butter_bridge',
+                     title: 'Living in the shadow of a great man',
+                     article_id: 1,
+                     body: 'I find this existence challenging',
+                     topic: 'mitch',
+                     created_at: expect.any(String),
+                     votes: 100,
+                     article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+                })
+            })
+        });
+
+        test('GET request. 404 status code. Responds with "Article id not found." when given valid "article_id" (i.e. a number) that does not exist', () => {
+            return request(app)
+            .get("/api/articles/5870")
+            .expect(404)
+            .then(({body}) => {
+                expect(body.message).toBe('Article id not found.');
+            })
+        });
+
+        test('Get request. 400 status code. Responds with "Bad request made." when given INVALID "article_id" (i.e. NOT a number) that does not exist ', () => {
+            return request(app)
+            .get("/api/articles/monkey")
+            .expect(400)
+            .then(({body}) => {
+                expect(body.message).toBe("Bad request made.")
+            })
+        });
+
     });
 });
