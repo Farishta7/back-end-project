@@ -107,7 +107,7 @@ describe('app', () => {
         });
     });
 
-    describe('/api/articles/:article_id/comments', () => {
+    describe.only('/api/articles/:article_id/comments', () => {
         test('GET request. 200 status code. Should respond with an array of comments for the given article_id of which each comment should have the correct properties. Comments should also be served with the most recent comments first', () => {
             return request(app)
             .get("/api/articles/1/comments")
@@ -135,9 +135,34 @@ describe('app', () => {
                  })
 
                  expect(sortedComments).toEqual(body.articleComments);
-            })
+            });
+        });
 
-            
+        test('GET request. 200 status code. Should respond with an empty array if the article does now have any comments associated with it.', () => {
+            return request(app)
+            .get("/api/articles/8/comments") // wrote 8 because in the test data, for "article_id 8" in articles.js file, there are no comments in the comments.js file.
+            .expect(200)
+            .then(({body}) => {
+                expect(body.articleComments).toEqual([])
+            })
+        });
+
+        test('GET request. 404 status code. Responds with "Article id not found." when given valid "article_id" (i.e. a number) that does not exist', () => {
+            return request(app)
+            .get("/api/articles/5870/comments")
+            .expect(404)
+            .then(({body}) => {
+                expect(body.message).toBe('Article id not found.');
+            })
+        });
+
+        test('Get request. 400 status code. Responds with "Bad request made." when given INVALID "article_id" (i.e. NOT a number) that does not exist ', () => {
+            return request(app)
+            .get("/api/articles/chipmunk/comments")
+            .expect(400)
+            .then(({body}) => {
+                expect(body.message).toBe("Bad request made.")
+            })
         });
     });
 });
