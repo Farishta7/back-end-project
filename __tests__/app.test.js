@@ -88,7 +88,7 @@ describe('app', () => {
             })
         });
 
-        test('GET request. 404 status code. Responds with "Article id not found." when given valid "article_id" (i.e. a number) that does not exist', () => {
+        test('GET request. 404 status code. Responds with "Article id not found." when given valid "article_id" (i.e. a number) in the API path that does not exist', () => {
             return request(app)
             .get("/api/articles/5870")
             .expect(404)
@@ -97,7 +97,7 @@ describe('app', () => {
             })
         });
 
-        test('Get request. 400 status code. Responds with "Bad request made." when given INVALID "article_id" (i.e. NOT a number) that does not exist ', () => {
+        test('Get request. 400 status code. Responds with "Bad request made." when given INVALID "article_id" (i.e. NOT a number) in the API path that does not exist ', () => {
             return request(app)
             .get("/api/articles/monkey")
             .expect(400)
@@ -138,7 +138,7 @@ describe('app', () => {
             });
         });
 
-        test('GET request. 200 status code. Should respond with an empty array if the article does now have any comments associated with it.', () => {
+        test('GET request. 200 status code. Should respond with an empty array if the article does not have any comments associated with it.', () => {
             return request(app)
             .get("/api/articles/8/comments") // wrote 8 because in the test data, for "article_id 8" in articles.js file, there are no comments in the comments.js file.
             .expect(200)
@@ -147,7 +147,7 @@ describe('app', () => {
             })
         });
 
-        test('GET request. 404 status code. Responds with "Article id not found." when given valid "article_id" (i.e. a number) that does not exist', () => {
+        test('GET request. 404 status code. Responds with "Article id not found." when given valid "article_id" (i.e. a number) in the API path that does not currently exist.', () => {
             return request(app)
             .get("/api/articles/5870/comments")
             .expect(404)
@@ -156,12 +156,94 @@ describe('app', () => {
             })
         });
 
-        test('Get request. 400 status code. Responds with "Bad request made." when given INVALID "article_id" (i.e. NOT a number) that does not exist ', () => {
+        test('Get request. 400 status code. Responds with "Bad request made." when given INVALID "article_id" (i.e. NOT a number) in the API path that does not exist.', () => {
             return request(app)
             .get("/api/articles/chipmunk/comments")
             .expect(400)
             .then(({body}) => {
                 expect(body.message).toBe("Bad request made.")
+            })
+        });
+    });
+
+    describe('POST request: /api/articles/:article_id/comments', () => {
+        test('POST request. 201 status code. Request body should accept an object with properties of "username" and "body. And responds with the posted comment.', () => {
+            const requestBody = {
+                username: "butter_bridge",
+                body:"I love butter on toast!"
+            };
+
+            return request(app)
+            .post("/api/articles/1/comments")
+            .send(requestBody) //this is sent to api as a request
+            .expect(201)
+            .then(({body}) => {
+                expect(body.comment).toEqual({
+                    comment_id: expect.any(Number),
+                    body: "I love butter on toast!",
+                    votes: 0,
+                    author: "butter_bridge",
+                    article_id: 1,
+                    created_at: expect.any(String)
+                })
+            })
+        });
+
+        test('POST request. 400 status code. Responds with "Bad request made." when given empty body i.e. {}.', () => {
+            const requestBody = {};
+
+            return request(app)
+            .post("/api/articles/1/comments")
+            .send(requestBody)
+            .expect(400)
+            .then(({body}) => {
+                expect(body.message).toBe("Bad request made. Missing required fields.")
+            })
+        });
+
+        test('POST request. 400 status code. Responds with "Bad request made." when given INVALID "article_id" (i.e. NOT a number) in the API path that does not exist.', () => {
+            const requestBody = {
+                username: "butter_bridge",
+                body:"I love butter on toast!"
+            };
+
+            return request(app)
+            .post("/api/articles/dentist/comments")
+            .send(requestBody)
+            .expect(400)
+            .then(({body}) => {
+                expect(body.message).toBe("Bad request made.")
+            })
+        });
+
+        test('POST request. 404 status code. Should respond with "Bad request made." when given an invalid username i.e. username does not exist.', () => {
+            const requestBody = {
+                username: "tomato",
+                body:"I love butter on toast!"
+            };
+
+            return request(app)
+            .post("/api/articles/1/comments")
+            .send(requestBody)
+            .expect(404)
+            .then(({body}) => {
+                expect(body.message).toBe("Bad request made. Username does not exist.")
+            })
+            
+        });
+
+        test('POST request. 404 status code. Responds with "Article id not found." when given valid "article_id" (i.e. a number) in the API path that does not currently exist.', () => {
+            const requestBody = {
+                username: "butter_bridge",
+                body:"I love butter on toast!"
+            };
+
+            return request(app)
+            .post("/api/articles/989/comments")
+            .send(requestBody)
+            .expect(404)
+            .then(({body}) => {
+                expect(body.message).toBe("Article id not found.")
             })
         });
     });
