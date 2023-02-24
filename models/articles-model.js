@@ -36,7 +36,14 @@ exports.fetchArticleCommentById = (article_id) => {
                 
             })
         }
-    })
+    })    
+}
 
-    
+exports.postedComment = (article_id, username, body) => {
+    return db
+    //for following, we defaulted votes to ZERO incase the incoming body of the post request has the votes set to e.g. 5 already. 
+    .query(`INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`, [article_id, username, body])
+    .then((result) => {
+            return result.rows[0];
+    })
 }
