@@ -1,6 +1,5 @@
-//400 error
 exports.handlePSQL400s = (error, request, response, next) => {
-    console.log(error)
+    console.log(error);
     if (error.code === "22P02") {
         response.status(400).send({message: "Bad request made."})
     } else if (error.code === "23502") {
@@ -14,9 +13,6 @@ exports.handlePSQL400s = (error, request, response, next) => {
     }
 };
 
-
-
-// 404 error
 exports.handleCustomErrors = (error, request, response, next) => {
     if (error.message && error.status) {
         response.status(error.status).send({message: error.message})

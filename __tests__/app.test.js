@@ -247,4 +247,63 @@ describe('app', () => {
             })
         });
     });
+
+    describe('PATCH /api/articles/:article_id', () => {
+        test('PATCH request. 200 status code. Accepts an object in the form "{ inc_votes: newVote }". Should respond with an updated article with the votes increased/decreased according to "newVote".', () => {
+            const requestBody = {inc_votes: 4};
+
+            return request(app)
+            .patch("/api/articles/1")
+            .send(requestBody)
+            .expect(200)
+            .then(({body}) => {
+                expect(body.votes).toEqual({
+                    article_id: 1,
+                    title: 'Living in the shadow of a great man',
+                    topic: 'mitch',
+                    author: 'butter_bridge',
+                    body: 'I find this existence challenging',
+                    created_at: expect.any(String),
+                    votes: 104,
+                    article_img_url:'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+                })
+            })
+        });
+
+        test('PATCH request. 400 status code. Responds with "Bad request made. Missing required fields." when given empty body i.e. {}. ', () => {
+            const requestBody = {};
+
+            return request(app)
+            .patch("/api/articles/1")
+            .send(requestBody)
+            .expect(400)
+            .then(({body}) => {
+                expect(body.message).toBe("Bad request made. Missing required fields.")
+            })
+        });
+
+        test('PATCH request. 404 status code. Responds with "Article id not found." when given valid "article_id" (i.e. a number) in the API path that does not currenlty exist', () => {
+            const requestBody = {inc_votes: 4};
+            
+            return request(app)
+            .patch("/api/articles/5870")
+            .send(requestBody)
+            .expect(404)
+            .then(({body}) => {
+                expect(body.message).toBe('Article id not found.');
+            })
+        });
+
+        test('PATCH request. 400 status code. Responds with "Bad request made." when given INVALID "article_id" (i.e. NOT a number) in the API path that does not exist.', () => {
+            const requestBody = {inc_votes: 4};
+            
+            return request(app)
+            .patch("/api/articles/chipmunk")
+            .send(requestBody)
+            .expect(400)
+            .then(({body}) => {
+                expect(body.message).toBe("Bad request made.")
+            })
+        });
+    });
 });
