@@ -46,4 +46,18 @@ exports.postedComment = (article_id, username, body) => {
     .then((result) => {
             return result.rows[0];
     })
-}
+};
+
+exports.patchedComment = (inc_votes, article_id) => {
+    return db
+    .query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`, [inc_votes, article_id])
+    .then((result) => {
+        if (result.rows.length === 0) {
+            return Promise.reject({message: 'Article id not found.', status: 404})
+        } else {
+            return result.rows[0];
+        } 
+    })
+};
+
+//`UPDATE articles SET votes = votes + 4 WHERE article_id = 1 RETURNING *;`
