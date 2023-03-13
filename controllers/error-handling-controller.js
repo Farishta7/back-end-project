@@ -1,5 +1,4 @@
 exports.handlePSQL400s = (error, request, response, next) => {
-    console.log(error);
     if (error.code === "22P02") {
         response.status(400).send({message: "Bad request made."})
     } else if (error.code === "23502") {
