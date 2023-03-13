@@ -306,4 +306,27 @@ describe('app', () => {
             })
         });
     });
+
+    // describe('GET /api/users', () => {
+    //     test('GET request. 200 status code. Should respond with an array of objects with the correct properties.', () => {
+    //         return request(app)
+    //         .get("/api/users")
+    //         .expect(200)
+    //         .then(({body}) => {
+    //             body.users.forEach((user) => {
+    //                 expect(user).toEqual(
+    //                  expect.objectContaining({
+    //                     username: expect.any(String),
+    //                     name: expect.any(String),
+    //                     avatar_url: expect.any(String)
+    //                 })
+    //                 )
+    //              });
+    //         })
+    //     });
+
+    //     // test('GET request. 400 status code.  ', () => {
+            
+    //     // });
+    // });
 });

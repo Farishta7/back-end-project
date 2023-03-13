@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const { getTopics } = require("./controllers/topics-controller");
 const {getArticles, getArticleById, getArticleCommentById, postArticleCommentById, patchArticleCommentById} = require("./controllers/articles-controller");
-const {getUsers} = require("./controllers/users-controller")
+// const {getUsers} = require("./controllers/users-controller")
 const {statusError500, handlePSQL400s, handleCustomErrors} = require("./controllers/error-handling-controller")
 const cors = require('cors');
 

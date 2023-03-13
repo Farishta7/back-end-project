@@ -6,7 +6,6 @@ exports.getTopics = (request, response, next) => {
         response.status(200).send({topics: topicsArray});
     })
     .catch((err) => {
-        console.log(err);
         next(err);
     })
 }
