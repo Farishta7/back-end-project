@@ -30,7 +30,7 @@ exports.fetchArticleCommentById = (article_id) => {
             return Promise.reject({message: 'Article id not found.', status: 404})
         } else {
             return db
-            .query(`SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body, comments.article_id FROM comments WHERE article_id = $1 ORDER BY comments.created_at DESC;`, [article_id])
+            .query(`SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body, comments.article_id FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`, [article_id])
             .then((result) => {
                     return result.rows
                 
